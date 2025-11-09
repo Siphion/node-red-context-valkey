@@ -6,6 +6,8 @@ tsconfig.cjs.json
 # Development files
 .vscode/
 .idea/
+.claude/
+Claude.md
 *.swp
 *.swo
 *~
