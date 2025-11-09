@@ -1,0 +1,30 @@
+# Source files
+src/
+tsconfig.json
+tsconfig.cjs.json
+
+# Development files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Test files
+test/
+coverage/
+
+# Git
+.git/
+.gitignore
+
+# Documentation source
+docs/
+
+# Environment
+.env
+.env.local
+
+# Logs
+*.log
+npm-debug.log*

@@ -1,0 +1,56 @@
+{
+  "name": "node-red-context-valkey",
+  "version": "1.0.0",
+  "description": "A Node-RED context store implementation using Valkey/Redis for clustering support",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/esm/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc -p tsconfig.json",
+    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "keywords": [
+    "node-red",
+    "context",
+    "valkey",
+    "redis",
+    "clustering",
+    "distributed",
+    "storage"
+  ],
+  "author": "Siphion",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Siphion/node-red-context-valkey.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Siphion/node-red-context-valkey/issues"
+  },
+  "homepage": "https://github.com/Siphion/node-red-context-valkey#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "peerDependencies": {
+    "node-red": ">=3.0.0"
+  },
+  "dependencies": {
+    "ioredis": "^5.3.2",
+    "json-stringify-safe": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/json-stringify-safe": "^5.0.3",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0"
+  }
+}
