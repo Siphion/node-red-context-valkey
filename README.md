@@ -294,21 +294,6 @@ valkey: {
   enableOfflineQueue: true,
 }
 ```
-
-## Comparison with node-red-context-redis
-
-This module improves upon the original `node-red-context-redis`:
-
-| Feature | node-red-context-redis | node-red-context-valkey |
-|---------|------------------------|-------------------------|
-| Storage Location | Optional (memory or Redis) | **Always Redis** |
-| API | Extra parameter for store selection | Clean, no extra parameters |
-| Configuration | Separate config | **Shared with storage module** |
-| Clustering | Possible but error-prone | **Designed for clustering** |
-| Maintenance | Last updated 4 years ago | **Active development** |
-| TypeScript | No | **Yes, with full types** |
-| Compression | Basic | **Optimized (>1KB threshold)** |
-
 ## Troubleshooting
 
 ### Connection Issues
