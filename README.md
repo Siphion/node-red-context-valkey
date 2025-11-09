@@ -35,16 +35,14 @@ module.exports = {
 
   // Context API configuration
   contextStorage: {
-    default: "valkey",  // Use Valkey as default context store
-    valkey: {
-      module: require('node-red-context-valkey'),
-      config: "valkey"  // Reference to shared valkey config
+    default: {
+      module: require('node-red-context-valkey')
     }
   },
 
-  // Shared Valkey configuration
+  // Shared Valkey configuration (used by both storage and context modules)
   valkey: {
-    host: '127.0.0.1',
+    host: 'localhost',
     port: 6379,
     password: 'your-password',  // Optional
     db: 0,                       // Optional, default: 0
@@ -54,6 +52,8 @@ module.exports = {
 }
 ```
 
+**Note:** Both the storage module and context module automatically use the `valkey` configuration object from `settings.js`. There's no need to specify `config: "valkey"` explicitly.
+
 ### Advanced Configuration
 
 #### With Redis Sentinel (High Availability)
@@ -61,10 +61,8 @@ module.exports = {
 ```javascript
 module.exports = {
   contextStorage: {
-    default: "valkey",
-    valkey: {
-      module: require('node-red-context-valkey'),
-      config: "valkey"
+    default: {
+      module: require('node-red-context-valkey')
     }
   },
 
@@ -144,14 +142,83 @@ const [name, age] = global.get(["user.name", "user.age"]);
 - **Flow** - Shared across all nodes in a flow tab, and across all instances in the cluster
 - **Node** - Private to a specific node, but shared across all instances in the cluster
 
+## Complete Clustering Solution
+
+This module works seamlessly with `node-red-storage-valkey` to provide a **complete clustering solution** for Node-RED:
+
+- **Storage Module** ([node-red-storage-valkey](https://github.com/Siphion/node-red-storage-valkey)) - Manages flows, credentials, and settings with automatic synchronization across instances
+- **Context Module** (this package) - Handles shared context data across all instances
+
+Together, these modules enable:
+
+1. **Shared Flows and Credentials** - Storage module keeps all instances in sync
+2. **Shared Context Data** - This module ensures consistent state across instances
+3. **Auto-reload on Flow Updates** - Workers automatically reload when admin saves flows
+4. **True Horizontal Scaling** - Scale to any number of instances seamlessly
+
+### Admin vs Worker Configuration
+
+For optimal clustering, configure different Node-RED instances based on their role:
+
+**Admin Node** (with editor access):
+```javascript
+module.exports = {
+  storageModule: require('node-red-storage-valkey'),
+
+  contextStorage: {
+    default: {
+      module: require('node-red-context-valkey')
+    }
+  },
+
+  valkey: {
+    host: 'localhost',
+    port: 6379,
+    keyPrefix: 'nodered:',
+    publishOnSave: true,        // Broadcast flow changes
+    enableCompression: true
+  }
+}
+```
+
+**Worker Nodes** (load-balanced instances):
+```javascript
+module.exports = {
+  storageModule: require('node-red-storage-valkey'),
+
+  contextStorage: {
+    default: {
+      module: require('node-red-context-valkey')
+    }
+  },
+
+  httpAdminRoot: false,  // Disable editor interface
+
+  valkey: {
+    host: 'localhost',
+    port: 6379,
+    keyPrefix: 'nodered:',
+    subscribeToUpdates: true,   // Listen for flow updates
+    enableCompression: true
+  }
+}
+```
+
+**Key Points:**
+- Admin nodes use `publishOnSave: true` to broadcast changes via pub/sub
+- Worker nodes use `subscribeToUpdates: true` to receive and auto-reload flows
+- Worker nodes should have `httpAdminRoot: false` to disable the editor
+- Both modules automatically use the shared `valkey` configuration object
+
 ## Clustering Benefits
 
 When running multiple Node-RED instances connected to the same Valkey/Redis:
 
-1. **Shared State** - All instances see the same context data
+1. **Shared State** - All instances see the same context data in real-time
 2. **Load Balancing** - Distribute work across instances while maintaining state
 3. **High Availability** - If one instance fails, others continue with the same data
 4. **Horizontal Scaling** - Add more instances without data inconsistency
+5. **Automatic Synchronization** - Workers auto-reload when admin updates flows
 
 ### Example: Load Balanced API with Shared Counter
 
