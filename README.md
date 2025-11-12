@@ -1,3 +1,9 @@
+# ⚠️ **DEPRECATED REPOSITORY**
+
+This project is **no longer maintained**.  
+It has been **moved to a new repository** 👉  
+➡️ [**Siphion/node-red-cluster**](https://github.com/Siphion/node-red-cluster)
+
 # node-red-context-valkey
 
 A Node-RED context store implementation using Valkey/Redis for clustering support.
